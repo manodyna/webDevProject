@@ -17,6 +17,7 @@
     "googleapis": "^89.0.0",
     "query-string": "^7.0.1",
     "request": "^2.88.2",
-    "url-pars": "^1.0.3"
+    "url-pars": "^1.0.3",
+    "url-parse": "^1.5.3"
   }
 }
