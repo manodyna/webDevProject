@@ -50,7 +50,7 @@ app.post("/bmi.html", function (req, res) {
 
 // Oauth login google
 
-app.get("/login", (req, res)=>{
+app.get("/login", (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
         "412564020124-qr6c7fsgafarqu442obmbtspl9e2k5p7.apps.googleusercontent.com",
         "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",
@@ -59,28 +59,28 @@ app.get("/login", (req, res)=>{
 
     const scopes = ["https://www.googleapis.com/auth/fitness.activity.read profile email openid"];
     const url = oauth2Client.generateAuthUrl({
-        access_type:"offline",
+        access_type: "offline",
         scope: scopes,
         state: json.toString({
-            callbackUrl: req.body.callbackUrl, 
+            callbackUrl: req.body.callbackUrl,
             userID: req.body.userid
         })
     });
 
-    request(url, (err, response, body) =>{
+    request(url, (err, response, body) => {
         console.log("error", err);
         console.log(response && response.statusCode);
-        res.send({url});
+        res.send({ url });
     });
 });
 
 
 // redirect to google fit dashboard
-app.get("/fit-dash", async (req, res)=>{
+app.get("/fit-dash", async (req, res) => {
     // console.log("fit-dash entered");
     const queryURL = new urlParse(req.url);
     // console.log("queryURL found");
-    const code = queryParse.parse(queryURL.query.code);
+    const code = queryParse.parse(queryURL.query).code;
     // console.log("code found");
     // console.log(code);
     const oauth2Client = new google.auth.OAuth2(
@@ -91,9 +91,53 @@ app.get("/fit-dash", async (req, res)=>{
     // console.log("redirect succesful");
     const tokens = await oauth2Client.getToken(code);
     // console.log(tokens)
+    res.send("HELLO");
+
+    let stepArray = [];
+
+    // 2416
+    try {
+        const result = await axios({
+            method: "POST",
+            headers: {
+                authorization: "Bearer " + tokens.tokens.access_token
+            },
+            "Content-type": "application/json",
+            url: "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
+            data: {
+                aggregateBy: [
+                    {
+                        dataTypeName: "com.google.step_count.delta",
+                        dataSourceId: "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
+                    },
+                ],
+                bucketByTime:{durationMillis : 86400000},
+                startTimeMillis:1585785599000,
+                endTimeMillis:1585958399000,
+            },
+        });
+        // console.log(result);
+        stepArray = result.data.bucket;
+    } catch (e) {
+        console.log(e);
+    }
+
+    try {
+        for(const dataSet of stepArray){
+            // console.log(dataSet);
+            for(const points of dataSet.dataset){
+                // console.log(points);
+                for(const steps of points.point){
+                    console.log(steps.value);
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
 });
 
-app.get("/profile", (req, res)=>{
+app.get("/profile", (req, res) => {
 
 })
 
