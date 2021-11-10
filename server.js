@@ -77,25 +77,18 @@ app.get("/login", (req, res) => {
 
 // redirect to google fit dashboard
 app.get("/fit-dash", async (req, res) => {
-    // console.log("fit-dash entered");
     const queryURL = new urlParse(req.url);
-    // console.log("queryURL found");
     const code = queryParse.parse(queryURL.query).code;
-    // console.log("code found");
-    // console.log(code);
     const oauth2Client = new google.auth.OAuth2(
         "412564020124-qr6c7fsgafarqu442obmbtspl9e2k5p7.apps.googleusercontent.com",
         "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",
         "http://localhost:3000/fit-dash"
     )
-    // console.log("redirect succesful");
     const tokens = await oauth2Client.getToken(code);
-    // console.log(tokens)
     res.send("HELLO");
 
     let stepArray = [];
 
-    // 2416
     try {
         const result = await axios({
             method: "POST",
@@ -116,7 +109,7 @@ app.get("/fit-dash", async (req, res) => {
                 endTimeMillis:1585958399000,
             },
         });
-        // console.log(result);
+
         stepArray = result.data.bucket;
     } catch (e) {
         console.log(e);
@@ -124,10 +117,9 @@ app.get("/fit-dash", async (req, res) => {
 
     try {
         for(const dataSet of stepArray){
-            // console.log(dataSet);
             for(const points of dataSet.dataset){
-                // console.log(points);
                 for(const steps of points.point){
+                    // this console logs the step count
                     console.log(steps.value);
                 }
             }
@@ -136,6 +128,10 @@ app.get("/fit-dash", async (req, res) => {
         
     }
 });
+
+app.post("/fit-dash.html", function(req, res){
+    
+})
 
 app.get("/profile", (req, res) => {
 
