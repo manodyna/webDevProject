@@ -18,6 +18,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+// backend for bmi calculation
 app.get("/bmi", function (req, res) {
     res.sendFile(__dirname + "/bmi.html")
 });
@@ -46,6 +48,8 @@ app.post("/bmi.html", function (req, res) {
     res.send(bmiResponse);
 });
 
+// Oauth login google
+
 app.get("/login", (req, res)=>{
     const oauth2Client = new google.auth.OAuth2(
         "412564020124-qr6c7fsgafarqu442obmbtspl9e2k5p7.apps.googleusercontent.com",
@@ -70,12 +74,30 @@ app.get("/login", (req, res)=>{
     });
 });
 
+
+// redirect to google fit dashboard
 app.get("/fit-dash", async (req, res)=>{
+    // console.log("fit-dash entered");
     const queryURL = new urlParse(req.url);
+    // console.log("queryURL found");
     const code = queryParse.parse(queryURL.query.code);
-    console.log(code);
+    // console.log("code found");
+    // console.log(code);
+    const oauth2Client = new google.auth.OAuth2(
+        "412564020124-qr6c7fsgafarqu442obmbtspl9e2k5p7.apps.googleusercontent.com",
+        "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",
+        "http://localhost:3000/fit-dash"
+    )
+    // console.log("redirect succesful");
+    const tokens = await oauth2Client.getToken(code);
+    // console.log(tokens)
+});
+
+app.get("/profile", (req, res)=>{
+
 })
 
+// port config
 app.listen(3000, function () {
     console.log("server started on port 3000");
 });
