@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const chimp = require("./mailchimp.js");
+constant 
 
 const app = express();
 const { google } = require("googleapis");
@@ -18,7 +19,7 @@ const { response } = require("express");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(chimp)
+// app.use(chimp)
 
 
 // backend for bmi calculation
