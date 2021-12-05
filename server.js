@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const chimp = require("./mailchimp.js");
-constant 
+// constant 
 
 const app = express();
 const { google } = require("googleapis");
